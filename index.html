@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order Pipeline OS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="title-row">
+    <div>
+      <h1>Order Pipeline OS</h1>
+      <div class="crumb">Problem 2 · Online Shopping &amp; Order Processing System — OS concepts visualizer</div>
+      <div class="crumb" style="margin-top:3px">Sparsh Chalotra (24003148) &amp; Prajwal Martiwar (24003157)</div>
+    </div>
+    <button class="theme-btn" id="themeBtn">🌙 theme</button>
+  </div>
+  <nav id="tabs">
+    <button data-tab="cpu" class="active">CPU Scheduling</button>
+    <button data-tab="pc">Producer–Consumer</button>
+    <button data-tab="bank">Banker's Algorithm</button>
+    <button data-tab="mem">Memory Management</button>
+  </nav>
+</header>
+<main>
+
+<!-- CPU SCHEDULING -->
+<section class="panel active" id="panel-cpu">
+  <p class="lede">Order-processing tasks (payment capture, inventory check, invoice generation, delivery scheduling) arrive at different times and need different CPU bursts. Round Robin keeps checkout responsive under flash-sale load by time-slicing across tasks.</p>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3><span class="dot"></span>Task queue</h3>
+      <table id="cpuTable"><thead><tr><th>Order task</th><th>Arrival</th><th>Burst</th><th></th></tr></thead><tbody></tbody></table>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" id="cpuAdd">+ add task</button>
+        <label style="margin:0">Quantum<input id="quantum" type="number" value="3" min="1" style="width:60px"></label>
+        <button class="btn" id="cpuRun">Run Round Robin</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="dot"></span>Gantt chart</h3>
+      <div id="gantt" class="gantt"></div>
+      <div id="ganttScale" class="gantt-scale"></div>
+      <div id="legend" class="legend"></div>
+      <div class="statrow" id="cpuStats"></div>
+      <table id="cpuResult" style="margin-top:12px"><thead><tr><th>Task</th><th>Waiting</th><th>Turnaround</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCER CONSUMER -->
+<section class="panel" id="panel-pc">
+  <p class="lede">Customers placing orders are <b>producers</b> filling a bounded buffer (the order queue); fulfilment workers — payment, inventory, invoicing — are <b>consumers</b> draining it. A mutex guards the buffer and counting semaphores (empty/full) stop producers overrunning it or consumers starving.</p>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3><span class="dot"></span>Bounded buffer (order queue)</h3>
+      <label>Buffer size<input id="bufSize" type="number" value="6" min="2" max="10"></label>
+      <div class="buffer" id="bufferView"></div>
+      <div class="sem" id="semView"></div>
+      <div class="row">
+        <button class="btn" id="produceBtn">Producer: new order</button>
+        <button class="btn ghost" id="consumeBtn">Consumer: fulfil order</button>
+        <button class="btn ghost" id="pcReset">Reset</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="dot"></span>Event log</h3>
+      <div class="log" id="pcLog"></div>
+    </div>
+  </div>
+</section>
+
+<!-- BANKER'S -->
+<section class="panel" id="panel-bank">
+  <p class="lede">Order-processing tasks compete for three shared services: <b>Inventory</b>, <b>Payment Gateway</b>, and <b>DB Connections</b>. Before granting any request, the system runs Banker's Algorithm to check it still leaves a safe sequence — avoiding deadlock between tasks each holding one resource while waiting on another.</p>
+  <div class="card">
+    <h3><span class="dot"></span>Allocation / Maximum / Available</h3>
+    <div class="matrix-wrap"><table id="bankTable"></table></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn ghost" id="bankAddRow">+ task</button>
+      <button class="btn" id="bankRun">Check safe sequence</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3><span class="dot"></span>Result</h3>
+    <div id="bankResult"></div>
+  </div>
+</section>
+
+<!-- MEMORY -->
+<section class="panel" id="panel-mem">
+  <p class="lede">Each concurrent order-processing task (checkout session, payment handler, invoice renderer…) needs a block of memory. First Fit and Best Fit place tasks into free holes of total heap memory; watch fragmentation grow as orders complete and free memory unevenly.</p>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3><span class="dot"></span>Setup</h3>
+      <label>Total memory (KB)<input id="memTotal" type="number" value="1000"></label>
+      <label>Strategy
+        <select id="memStrategy"><option value="first">First Fit</option><option value="best">Best Fit</option></select>
+      </label>
+      <label>New task size (KB)<input id="memReqSize" type="number" value="120"></label>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="memAlloc">Allocate task</button>
+        <button class="btn ghost" id="memFreeLast">Free oldest task</button>
+        <button class="btn ghost" id="memReset">Reset heap</button>
+      </div>
+      <div class="note" id="memFragNote"></div>
+    </div>
+    <div class="card">
+      <h3><span class="dot"></span>Heap</h3>
+      <div class="mem-bar" id="memBar"></div>
+      <table id="memTable" style="margin-top:10px"><thead><tr><th>Task</th><th>Size</th><th>Start</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>Four OS mechanisms, one order pipeline: the scheduler decides which task runs next, the bounded buffer keeps order intake and fulfilment in step, Banker's Algorithm stops shared-service requests from deadlocking, and the allocator gives each running task its own memory footprint.</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
